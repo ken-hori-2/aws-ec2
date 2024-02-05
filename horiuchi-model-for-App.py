@@ -465,14 +465,25 @@ def train(train_dataloader, model):
     print("type: {}".format(type(imgs_save)))
 
     epochs = range(len(accs))
+    # plt.style.use("ggplot")
+    # plt.plot(epochs, losses, label="train loss")
+    # # plt.figure()
+    # plt.plot(epochs, accs, label="accurucy")
+    # plt.legend()
+    # # plt.show()
+    # plt.savefig('result-data.png')
+    # plt.close()
+
+    fig = plt.figure(figsize=(15, 8))
+    # add_subplot()でグラフを描画する領域を追加する．引数は行，列，場所
+    ax1 = fig.add_subplot(1, 2, 1)
+    ax2 = fig.add_subplot(1, 2, 2)
+    fig.suptitle("Train Result - loss & acc -")
     plt.style.use("ggplot")
-    plt.plot(epochs, losses, label="train loss")
-    # plt.figure()
-    plt.plot(epochs, accs, label="accurucy")
+    ax1.plot(epochs, losses, label="train loss", color = "orange")
+    ax2.plot(epochs, accs, label="accurucy", color = "green")
     plt.legend()
-    # plt.show()
-    plt.savefig('result-data.png')
-    plt.close()
+    plt.savefig('result.png')
 
 def validation(val_dataloader, model):
     # # パラメータの読み込み
