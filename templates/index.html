@@ -3,8 +3,13 @@
 <div class="container">
   <div class="col content">
     <h1>画像分類</h1>
+    <!-- <h1>Image Classification</h1> -->
     <form method="post", enctype="multipart/form-data", action="/result"> <!-- postを配置-->
       <input name="file" type="file"> <!-- ファイルを選択するボタンを配置-->
+
+      <input type="radio", name="mode", value="True", action="mode_A"> Retrain</input><!-- 再学習させるかのボタンを配置-->
+      <input type="radio", name="mode", value="False", action="mode_B" checked> Load</input><!-- 再学習させるかのボタンを配置-->
+
       <input type="submit", value="判定"> <!-- アップロードボタンを配置-->
     </form>
   </div>
