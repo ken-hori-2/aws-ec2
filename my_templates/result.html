@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <div class="col content">
+    <!-- <h1>判定結果</h1> -->
+    <h1><strong>Prediction Results</strong></h1>
+    {{result}} <!-- 結果の表示(classifier.pyの出力) -->
+    <p><img src="{{filepath}}"></p> <!-- ファイルパスの画像を表示 -->
+    <form method="get" action="/">
+      <button class="submit">BACK</button> <!-- 戻る</button> --> <!-- 戻るボタンを配置 -->
+    </form>
+  </div>
+</div>
+{% endblock %}

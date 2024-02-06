@@ -49,7 +49,7 @@ img_size = 64 # 32
 n_result = 3  # 上位3つの結果を表示
 # app = Flask(__name__)
 # 相対パスで指定
-app = Flask(__name__, static_folder='upload_data') # デフォルトはstatic
+app = Flask(__name__, static_folder='../upload_data', template_folder='../my_templates') # デフォルトはstatic
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 

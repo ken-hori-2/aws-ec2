@@ -1,0 +1,14 @@
+body{
+    margin:30px;
+    background-color:aliceblue;
+    text-align: center;
+ }
+ 
+ h2{
+    color: lightblue;
+    font-size:50px;
+ }
+ 
+ p{
+    font-size:20px;
+ }

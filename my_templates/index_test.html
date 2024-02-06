@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<title>Flask入門</title>
+ <head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+   
+   <!--  CSS -->
+   <!-- <link rel="stylesheet" href="../static/style.css"> -->
+   <link rel="stylesheet" href="{{url_for('static',filename = 'style.css')}}">
+
+   <title>{{ti}}</title>
+ </head>
+
+ <body>
+   <header>
+       <div class="navbar navbar-dark bg-primary box-shadow">
+           <div class="container d-flex justify-content-between">
+               <a href="/" class="navbar-brand d-flex align-items-center">
+                   <h1><strong>{{message}}</strong></h1>
+               </a>
+           </div>
+       </div>
+   </header>
+   <div class="content container">
+       <h2>値を出力してみよう↓</h2>
+       <p>名前は？：{{ values.name }}です。</p>
+       <p>年齢は？：{{ values.age }}です。</p>
+   </div>
+
+   <p>{{data}}</p>
+
+   <form method="post" action="/">
+     <div>
+       <input type="text" name="kamakiri">
+     </div>
+     
+     <div>
+       <input type="checkbox" name="check" id="ck">
+       <label for="ck">チェックしましょう</label>
+     </div>
+
+     <div>
+       <input type="radio" name="radio" id="r1", value="A">
+       <label for="r1">ボタン1</label>
+     </div>
+     <div>
+       <input type="radio" name="radio" id="r2" value="B">
+       <label for="r2">ボタン2</label>
+     </div>
+     <div>
+       <input type="radio" name="radio" id="r3" value="C">
+       <label for="r3">ボタン3</label>
+     </div>
+     <div>
+       <select name="list_data" multiple>
+         <option>力学</option>
+         <option>熱力学</option>
+         <option>電磁気学</option>
+         <option>統計力学</option>
+         <option>量子力学</option>
+         <option>相対性理論</option>
+       </select>
+     </div>
+     <div>
+       <input type="submit" value="送信する">
+     </div>
+   </form>
+   
+
+   <div>
+     
+   </div>
+
+   <!-- Optional JavaScript -->
+   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+ </body>
+</html>

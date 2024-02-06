@@ -1,0 +1,64 @@
+{% extends "layout.html" %} <!-- 共通部分のレイアウトを表示 -->
+{% block content %} <!-- このブロックで囲まれた範囲でclassifier.pyを実行-->
+<!-- <div class="container">
+  <div class="col content">
+    <h1>画像分類</h1> -->
+    <!-- <form method="post", enctype="multipart/form-data", action="/result">--> <!-- postを配置-->
+      <!-- <input name="file" type="file"> --> <!-- ファイルを選択するボタンを配置-->
+      <!-- <div> -->
+        <!-- <input type="radio", name="mode", value="True", action="mode_A"> Retrain</input> --> <!-- 再学習させるかのボタンを配置-->
+        <!-- <input type="radio", name="mode", value="False", action="mode_B" checked> Load</input> --> <!-- 再学習させるかのボタンを配置-->
+      <!-- </div> -->
+      <!-- <input type="submit", value="判定"> --> <!-- アップロードボタンを配置-->
+    <!-- </form>
+  </div>
+</div> -->
+
+
+<div class="container">
+  <div class="col content">
+    
+    <div class="navbar navbar-dark bg-primary box-shadow">
+      <div class="container d-flex justify-content-between">
+        <a href="/" class="navbar-brand d-flex align-items-center">
+          <!-- <h1><strong>画像分類</strong></h1> -->
+          
+          <p>
+            <h1><strong>Image Classification<br>
+              AI models on aws EC2</strong></h1>
+          </p>
+          
+        </a>
+      </div>
+    </div>
+    
+    <div class="content container">
+      <h1>Please input image and upload file</h1>
+    </div>
+    
+    <!-- <div class="navbar navbar-dark bg-primary box-shadow">
+      <div class="container d-flex justify-content-between"> -->
+      <form method="post", enctype="multipart/form-data", action="/result"> <!-- postを配置-->
+        <div>
+          <input name="file" type="file"> <!-- ファイルを選択するボタンを配置-->
+        </div>
+
+        <div>
+          <h1>Please select mode</h1>
+          <input type="radio", name="mode", value="True", action="mode_A"> Retrain </input><!-- 再学習させるかのボタンを配置-->
+        </div>
+        <div>
+          <input type="radio", name="mode", value="False", action="mode_B" checked> Load Pre-trained </input><!-- 再学習させるかのボタンを配置-->
+        </div>
+
+        <div>
+          <h3>Submit it and let the AI model make predictions!</h3>
+          <input type="submit", value="Uploading & Prediction"> <!-- アップロード / 判定"> --> <!-- アップロードボタンを配置-->
+        </div>
+      </form>
+    <!-- </div>
+  </div> -->
+  
+  </div>
+</div>
+{% endblock %}
