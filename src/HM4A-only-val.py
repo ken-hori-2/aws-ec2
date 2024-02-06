@@ -40,7 +40,7 @@ img_size = 64 # 32
 n_result = 3  # 上位3つの結果を表示
 # app = Flask(__name__)
 # 相対パスで指定
-app = Flask(__name__, static_folder='upload_data') # デフォルトはstatic
+app = Flask(__name__, static_folder='upload_data', template_folder='../my_templates') # デフォルトはstatic
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -76,54 +76,90 @@ def result():
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
 
-        # 画像の読み込み
-        image = Image.open(filepath)
-        image = image.convert("RGB") # アップロードされた画像が「モノクロや透明値αが含まれるかもしれない」からRGBに変換して入力画像を統一
-        "***** コメントアウト *****"
-        image = image.resize((img_size, img_size)) # 入力画像を32*32にする
-        # > val_set()で処理する
-
-        normalize = transforms.Normalize(
-            (0.0, 0.0, 0.0), (1.0, 1.0, 1.0))  # 平均値を0、標準偏差を1に
-        to_tensor = transforms.ToTensor()
-        transform = transforms.Compose([to_tensor, normalize])
-        x = transform(image)
-        x = x.reshape(1, 3, img_size, img_size) # バッチサイズ, チャンネル数, 高さ, 幅
-        "***** コメントアウト *****"
-
-        # "val用のtransformを作成"
-        # val_transform = val_set()
-        # imgs = val_transform(image)
-        # # for imgs, labels in val_dataloader: # 1loopで32(バッチサイズ)個のデータを処理する
-        # imgs = imgs.reshape(1, 3, img_size, img_size) # dataloaderの上記のような処理が必要（データの一次元化） # バッチサイズ, チャンネル数, 高さ, 幅
-
+        "*** 前処理 ***"
+        imgs = Data_Preprocessing(filepath)
         # これでようやくNNに入力できるデータ形式になる
-
-
+        "*** モデルのインスタンス化 ***"
         model = CNN(4)
+        "*** モデルのロード ***"
+        # # train_model = True # 既存のデータで再度学習させてから推測するかどうか
+        # if train_model: # 再学習させたモデルをロード
+        #     model = Retraind_and_Load_ReTrained_Model(model)
+        # else: # 学習済みモデルをロード
+        model = Load_Trained_Model(model)
+        "*** 予測結果 ***"
+        pred = Prediction_Result(imgs, model)
+        result = Display_Three_Results(pred, n_result)
 
         
-        # パラメータの読み込み
-        param_load = torch.load("model-for-ec2.param")
-        model.load_state_dict(param_load)
-        # validation(validation_loader, model)
-        output = model(x)
-        pred = F.softmax(output, dim=1)[0] # 10個の出力が確率になる
-        # pred = torch.argmax(output, dim=1) # dimが0だとバッチ方向(縦). 1だと分類方向(横:0~9の分類) # イメージ:[batch, 予測]
-        # ↑これだと、4つの分類から最大値のみを選んでしまうのでだめ
-
-        sorted_idx = torch.argsort(-pred)  # 降順でソート # 大きい順で並べてindexをargsortで取得
-        result = ""
-        # 今回は結果を3つ表示
-        for i in range(n_result):
-            idx = sorted_idx[i].item() # 大きい順にソートしているので、最も大きい値が入る
-            ratio = pred[idx].item()
-            label = labels[idx]
-            result += "<p>" + str(round(ratio*100, 1)) + \
-                "%の確率で" + label + "です。</p>"
         return render_template("result.html", result=Markup(result), filepath=filepath) # result.htmlにこの結果を表示
     else:
         return redirect(url_for("index")) # POSTがない場合はトップに戻る
+
+def Data_Preprocessing(filepath):
+    # 画像の読み込み
+    image = Image.open(filepath)
+    image = image.convert("RGB") # アップロードされた画像が「モノクロや透明値αが含まれるかもしれない」からRGBに変換して入力画像を統一    
+    "***** コメントアウト *****"
+    # image = image.resize((img_size, img_size)) # 入力画像を32*32にする
+    # > val_set()で処理する
+
+    # normalize = transforms.Normalize(
+    #     (0.0, 0.0, 0.0), (1.0, 1.0, 1.0))  # 平均値を0、標準偏差を1に
+    # to_tensor = transforms.ToTensor()
+    # transform = transforms.Compose([to_tensor, normalize])
+    # x = transform(image)
+    # x = x.reshape(1, 3, img_size, img_size) # バッチサイズ, チャンネル数, 高さ, 幅
+    # # x = x.reshape(x.size(0), -1) # データを1次元に変換 # 上と同じ処理
+    "***** コメントアウト *****"
+
+    "val用のtransformを作成"
+    val_transform = val_set()
+    imgs = val_transform(image)
+    # for imgs, labels in val_dataloader: # 1loopで32(バッチサイズ)個のデータを処理する
+    imgs = imgs.reshape(1, 3, img_size, img_size) # dataloaderの上記のような処理が必要（データの一次元化） # バッチサイズ, チャンネル数, 高さ, 幅
+
+    return imgs
+
+def Load_Trained_Model(model):
+    print("***** validation *****")
+    # パラメータの読み込み
+    param_load = torch.load("model-for-ec2.param")
+    model.load_state_dict(param_load)
+    # validation(validation_loader, model)
+    
+    return model
+
+def Prediction_Result(imgs, model):
+    output = model(imgs)
+    pred = F.softmax(output, dim=1)[0] # 10個の出力が確率になる
+    # pred = torch.argmax(output, dim=1) # dimが0だとバッチ方向(縦). 1だと分類方向(横:0~9の分類) # イメージ:[batch, 予測]
+    # ↑これだと、4つの分類から最大値のみを選んでしまうのでだめ
+
+    return pred
+
+def Display_Three_Results(pred, n_result):
+    sorted_idx = torch.argsort(-pred)  # 降順でソート # 大きい順で並べてindexをargsortで取得
+    result = ""
+    # 今回は結果を3つ表示
+    for i in range(n_result):
+        idx = sorted_idx[i].item() # 大きい順にソートしているので、最も大きい値が入る
+        ratio = pred[idx].item()
+        label = labels[idx]
+        result += "<p>" + str(round(ratio*100, 1)) + \
+            "%の確率で" + label + "です。</p>"
+    
+    return result
+
+def val_set():
+
+    transform = transforms.Compose([
+        transforms.Resize((64, 64)), # 256, 256)), # 入力画像のサイズがバラバラなので、すべて256*256にリサイズする
+        transforms.ToTensor(),
+        transforms.Normalize((0.0, 0.0, 0.0), (1.0, 1.0, 1.0)),  # 平均値を0、標準偏差を1に [3チャンネル(RGB)なので3つある]
+    ])
+
+    return transform
 
 class CNN(nn.Module):
     def __init__(self, num_classes):
